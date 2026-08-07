@@ -78,6 +78,24 @@ python convert_html2md.py --commit
 
 The `--csv` option reads the `ID` column from a CSV exported via Kiwi TCMS's search results page. This is useful for targeting a specific set of test cases without processing every case in the system.
 
+### tag_cases.py
+
+Add or remove a tag on one or more test cases.
+
+```bash
+python tag_cases.py --tag <tag_name> <case_id> [case_id ...]
+```
+
+**Examples:**
+
+```bash
+# Add a tag
+python tag_cases.py --tag "regression" 7273 7274 7275
+
+# Remove a tag
+python tag_cases.py --tag "regression" --remove 7273 7274 7275
+```
+
 ## Configuration
 
 All scripts read credentials from `tcms.conf` in the project root. See `tcms.conf.example` for the format. Do not commit `tcms.conf` — it contains credentials.
