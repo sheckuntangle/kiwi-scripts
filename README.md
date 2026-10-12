@@ -20,6 +20,42 @@ Edit `tcms.conf` with your Kiwi TCMS URL, username, and password (or API token).
 
 ## Scripts
 
+### create_test_case.py
+
+Create a test case with a title, category, and component in any existing product:
+
+```bash
+python3 create_test_case.py --product "Velo" --category "High Availability" \
+    --component "HA Policy Management" --title "Verify HA policy creation"
+```
+
+All four options are required and accept names (the title becomes Kiwi's `summary`). The category and component must belong to the selected product. Names must match exactly; missing or ambiguous matches stop creation. Titles must be nonempty and at most 255 characters.
+
+Kiwi also requires priority and status. Defaults are `--priority "P2"` and `--status "CONFIRMED"`; override them with existing priority values and status names when needed. The configured user becomes the author. The case description is empty and the case is not added to a test plan.
+
+The script writes immediately and prints the new case ID, title, and `product > category > component` association. Categories and components both belong directly to the product. Every invocation creates a new case, even if its title already exists. Component attachment is a separate API call: if it fails after creation, the script exits nonzero and reports the created case ID for manual recovery. Do not rerun to repair attachment, as that creates another case. Use `python3 create_test_case.py --help` for all options.
+
+### add_case_section.py
+
+Create a component or category for test cases under **Velo**. Supply exactly one of `--component` or `--category`; the product is always Velo.
+
+```bash
+python3 add_case_section.py --component <name>
+python3 add_case_section.py --category <name>
+```
+
+**Examples:**
+
+```bash
+python3 add_case_section.py --category "High Availability"
+python3 add_case_section.py --component "HA Policy Management"
+python3 add_case_section.py --help
+```
+
+The script writes immediately. If the named component or category already exists under Velo, it reports its ID without creating a duplicate. It requires exactly one existing product named Velo and exits with a nonzero status on failure. Creating a section does not assign it to existing test cases.
+
+Categories and components both belong directly to the product in Kiwi; components are not nested under categories. A test case can use the **High Availability** category alongside the **HA Policy Management** component. Quote names containing spaces. The script uses the same `tcms.conf` credentials as the other utilities.
+
 ### add_cases_to_plan.py
 
 Add one or more existing test cases to a test plan.
